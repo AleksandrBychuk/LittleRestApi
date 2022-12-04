@@ -9,25 +9,28 @@ namespace LittleRestApi.Controllers
     public class HomeController : Controller
     {
         private readonly ISomeDataService _service;
-        public HomeController(ISomeDataService service)
+        private readonly ILogger<HomeController> _logger;
+        public HomeController(ISomeDataService service, ILogger<HomeController> logger)
         {
             _service = service;
+            _logger = logger;
         }
 
-        [HttpGet("somedatas-range")]
         /// <summary>
         /// Gets a range of data from {from} to {to}
         /// </summary>
         /// <param name="from">Start</param>
         /// <param name="to">Finish</param>
         /// <returns>List<SomeData></returns>
+        [HttpGet("somedatas-range")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<SomeData>>> GetSomeDatasRange(int from = 0, int to = 0)
+        public async Task<IActionResult> GetSomeDatasRange(int from = 0, int to = 0)
         {
             var result = await _service.GetSomeDatasRange(from, to);
             if (result.Count == 0)
                 return NotFound();
+            _logger.LogInformation($"Returned somedatas range from {from} to {to}!");
             return Ok(result);
         }
     }

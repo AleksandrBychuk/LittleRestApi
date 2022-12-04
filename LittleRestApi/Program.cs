@@ -1,6 +1,7 @@
 using LittleRestApi.Data;
 using LittleRestApi.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,9 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Test API from Aliaksandr Bychuk to Soldatov Oleg",
     });
 });
+
+builder.Services.AddLogging();
+
 string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
 builder.Services.AddTransient<ISomeDataService, SomeDataService>();
